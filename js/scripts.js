@@ -37,16 +37,26 @@ AddressBook.prototype.deleteContact = function(id) {
   return false;
 }
 
+
+
 // Business Logic for Contacts ---------
-function Contact(firstName, lastName, phoneNumber) {
+function Contact(firstName, lastName, phoneNumber, newEmail) {
   this.firstName = firstName,
   this.lastName = lastName,
-  this.phoneNumber = phoneNumber
+  this.phoneNumber = phoneNumber,
+  this.homeEmail = newEmail.homeEmail,
+  this.workEmail = newEmail.workEmail
+ }
+
+
+// //
+function Email (workEmail, homeEmail) {
+  this.workEmail = workEmail,
+  this.homeEmail = homeEmail
 }
 
-Contact.prototype.fullName = function() {
-  return this.firstName + " " + this.lastName;
-}
+
+
 
 // User Interface Logic ---------
 var addressBook = new AddressBook();
@@ -54,20 +64,55 @@ var addressBook = new AddressBook();
 function displayContactDetails(addressBookToDisplay) {
   var contactLists = $('ul#contacts');
   var htmlForContactInfo = '';
-  addressBookToDisplay.contacts.forEach(function(contact)) {
-    htmlforContactInfo += '<li id=' + contact.id + '>' + contact.firstName + ' ' + contact.lastName + '</li>';
+  addressBookToDisplay.contacts.forEach(function(contact) {
+    htmlForContactInfo += '<li id=' + contact.id + '>' + contact.firstName + ' ' + contact.lastName + '</li>';
   });
-  contactsList.html(htmlForContactInfo);
+  contactLists.html(htmlForContactInfo);
 };
 
+function showContact(contactId) {
+  var contact = addressBook.findContact(contactId);
+  $("#show-contact").show();
+  $(".first-name").html(contact.firstName);
+  $(".last-name").html(contact.lastName);
+  $(".phone-number").html(contact.phoneNumber);
+  $(".home-email").html(contact.workEmail);
+  $(".work-email").html(contact.homeEmail);
+  var buttons = $("#buttons");
+  buttons.empty();
+  buttons.append("<button class='deleteButton' id=" + contact.id + ">Delete</button>");
+}
+
+function attachContactListeners() {
+  $("#contacts").on("click", "li", function() {
+    showContact(this.id);
+  });
+  $("#buttons").on("click", ".deleteButton", function() {
+    addressBook.deleteContact(this.id);
+    $("#show-contact").hide();
+    displayContactDetails(addressBook);
+  });
+};
+
+
 $(document).ready(function() {
+  attachContactListeners();
   $("form#new-contact").submit(function(event) {
     event.preventDefault();
     var inputtedFirstName = $("input#new-first-name").val();
     var inputtedLastName = $("input#new-last-name").val();
     var inputtedPhoneNumber = $("input#new-phone-number").val();
-    var newContact = new Contact(inputtedFirstName, inputtedLastName, inputtedPhoneNumber);
+    var inputtedWorkEmail = $("input#new-work-email").val();
+    var inputtedHomeEmail = $("input#new-home-email").val();
+    console.log(inputtedWorkEmail)
+    console.log(inputtedHomeEmail)
+    var newEmail = new Email(inputtedWorkEmail, inputtedHomeEmail)
+    console.log(newEmail)
+    var newContact = new Contact(inputtedFirstName, inputtedLastName, inputtedPhoneNumber, newEmail);
+    console.log(newContact)
+    // var newEmail = new Contact(inputtedWorkEmail, inputtedHomeEmail);
     addressBook.addContact(newContact);
+    displayContactDetails(addressBook);
     console.log(addressBook.contacts);
-  })
-})
+  });
+});
