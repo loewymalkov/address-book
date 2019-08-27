@@ -76,9 +76,10 @@ function showContact(contactId) {
   $(".first-name").html(contact.firstName);
   $(".last-name").html(contact.lastName);
   $(".phone-number").html(contact.phoneNumber);
-  $(".home-email").html(contact.workEmail);
-  $(".work-email").html(contact.homeEmail);
+  $(".home-email").html(contact.homeEmail);
+  $(".work-email").html(contact.workEmail);
   var buttons = $("#buttons");
+
   buttons.empty();
   buttons.append("<button class='deleteButton' id=" + contact.id + ">Delete</button>");
 }
@@ -106,6 +107,16 @@ $(document).ready(function() {
     var inputtedHomeEmail = $("input#new-home-email").val();
     console.log(inputtedWorkEmail)
     console.log(inputtedHomeEmail)
+    // if ($("input#new-work-email").val() === "") {
+    //   $(".removeWorkEmail").remove();
+    // }
+    // if ($("input#new-home-email").val() === "") {
+    //   $(".removeHomeEmail").remove();
+    // } else {
+    //   $(".removeHomeEmail").show();
+    //   $(".removeWorkEmail").show();
+    // };
+
     var newEmail = new Email(inputtedWorkEmail, inputtedHomeEmail)
     console.log(newEmail)
     var newContact = new Contact(inputtedFirstName, inputtedLastName, inputtedPhoneNumber, newEmail);
